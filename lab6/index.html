@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Test AJAX page</title>
+  <link rel="stylesheet" type="text/css" href="./lab_styles.css">
+</head>
+
+<body>
+  <div class="container">
+    <div class="wrapper">
+      <div class="header">Test AJAX page</div>
+      <button class="button" onclick="loadData()">Load Some JSON</button>
+      <div class="content"></div>
+      <div class="footer"></div>
+    </div>
+  </div>
+  <script>
+    function loadData(anything) {
+      // What ARE promises? 
+      // var countries = [];
+      document.querySelector('.content').innerHTML = '';
+      var num = 1;
+      for(var i = 0; i < 15; i++){
+        const selectNumber = getRandomIntInclusive(0, 242);
+        fetch('ajax_sample.json')
+          .then(arbitrary_variable_name => {
+            // console.log(arbitrary_variable_name);
+            return arbitrary_variable_name.json()}) // gotta parse a string into an object! Here's how
+          .then(res => {
+            countries = res;
+            return res;
+          })
+          .then(res => res) // here we're just passing along res in a shorter format
+          .then(res => res.map(c => c.name + " " + c.code)) // Gotta know what values are available on the response - get this from your AP
+          .then(codes => {
+          // document.querySelector('.content').innerText = codes
+              let el = document.createElement("li");
+              el.innerText = num + " " + codes[selectNumber];
+              document.querySelector('.content').appendChild(el);
+              num++;
+          })
+          .catch((err) => {console.log(err)});
+          // console.log(countries);
+        }
+    }
+     
+    function getRandomIntInclusive(min, max) {
+      min = Math.ceil(min);
+      max = Math.floor(max);
+      return Math.floor(Math.random() * (max - min + 1)) + min; //The maximum is inclusive and the minimum is inclusive 
+    }
+    
+  </script>
+</body>
+
+</html>
