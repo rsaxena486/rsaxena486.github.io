@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Test AJAX page</title>
+  <link rel="stylesheet" type="text/css" href="./lab_styles.css">
+</head>
+
+<body>
+  <div class="container">
+    <div class="wrapper">
+      <div class="header">API Loader</div>
+      <button class="button" onclick="loadData()">Load Some JSON from a server</button>
+      <div class="content"></div>
+      <div class="footer"></div>
+    </div>
+  </div>
+  <script>
+    function loadData() {
+      var randNum = getRandomIntInclusive(0, 68);
+      fetch('https://api.umd.io/v0/courses/list')
+        .then(res => res.json())
+        .then(res=>{
+          return res;
+        })
+        .then(res =>
+        {
+          for(var i = 0; i < res.length; i++)
+          {
+            if(res[i]["dept_id"] == "INST"){
+              console.log(res[i]);
+              // you can use res[i] for anything
+              let el = document.createElement("li");
+              el.innerText = res[i]["course_id"] + ": " + res[i]["name"];
+              console.log(res[i]["course_id"])
+              document.querySelector('.content').appendChild(el);
+            };  
+          }
+          return res;
+        })
+        .then(res => 
+        {
+          console.log(res);
+          return res;
+        })
+        
+    }
+
+    function getRandomIntInclusive(min, max) 
+    {
+      min = Math.ceil(min);
+      max = Math.floor(max);
+      return Math.floor(Math.random() * (max - min + 1)) + min; 
+    }
+    
+  </script>
+</body>
+
+</html>
