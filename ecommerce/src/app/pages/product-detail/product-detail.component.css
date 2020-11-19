@@ -1,0 +1,18 @@
+.container {
+  min-height: 500px;
+}
+.img {
+  width: 100%;
+}
+.prod_content_div {
+  font-size: 1.15rem;
+}
+.prod_content_div h1{
+  font-family: var(--primary-font);
+}
+.prod_content_div h4{
+  color: #ccc;
+  letter-spacing: 3px;
+  font-weight: bold;
+  text-transform: uppercase;
+}

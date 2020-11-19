@@ -1,0 +1,21 @@
+.categoryTitle {
+  font-family: var(--primary-font);
+}
+
+.horizontalScroll {
+  overflow-x: scroll;
+  flex-wrap: nowrap;
+  width: 100%;
+}
+
+.card-subtitle {
+  margin-bottom: 1rem !important;
+}
+
+.card-title {
+  cursor: pointer;
+}
+.card-title:hover {
+  color: #337ab7;
+}
+

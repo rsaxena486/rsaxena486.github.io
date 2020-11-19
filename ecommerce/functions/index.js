@@ -1,0 +1,203 @@
+require('dotenv').config();
+var express = require('express');
+var app = express();
+var bodyParser = require('body-parser');
+var cors = require('cors')({
+    origin: true
+});
+
+const MongoClient = require("mongodb").MongoClient;
+const Server = require('mongodb').Server;
+
+const { promisify } = require('util');
+var redis = require("redis"),
+    redisClient = redis.createClient();
+const getAsync = promisify(redisClient.get).bind(redisClient);
+
+redisClient.on("error", function (err) {
+  console.log("Error " + err);
+});
+
+// let connectionCertPath = process.env.PATH_TO_MONGODB_CERT;
+
+app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.json());
+
+// Use body parser to parse JSON body
+app.use(function(req, res, next){
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "PUT, GET, POST, DELETE, OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  // bodyParser.urlencoded({extended: false});
+  // bodyParser.json();
+  next();
+});
+
+var options = {
+  useNewUrlParser: true
+};
+
+const port = process.env.PORT;
+const host = process.env.HOST;
+var buyit;
+
+var elasticSearch = require("elasticsearch");
+var elasticClient = new elasticSearch.Client({
+  host: 'localhost:9200',
+  // log: 'trace'
+});
+elasticClient.ping({
+  // ping usually has a 3000ms timeout
+  requestTimeout: 1000
+}, function (error) {
+  if (error) {
+    console.trace('elasticsearch cluster is down!');
+  } else {
+    checkIndices();
+    console.log('All is well');
+  }
+});
+// Create the index if it doesn't already exist
+function checkIndices() {
+  elasticClient.indices
+    .exists({
+      index: "electronics"
+    })
+    .then(exists => {
+      if (exists === false) {
+        elasticClient.indices
+          .create({
+            index: 'electronics',
+            body: {
+              mappings: {
+                product: {
+                  properties: {
+                    binding: { type: "text" },
+                    brand: { type: "text" },
+                    features: { type: "text" },
+                    title: { type: "text" }
+                  }
+                }
+              }
+            }
+          })
+          .catch(err => {
+            console.error(err);
+          });
+      }
+    })
+    .catch(err => {
+      console.error("Problem checking indices exist");
+    });
+}
+
+MongoClient.connect(new Server(host, port), options)
+  .then(db => {
+    buyit = db.db("buyit");
+    app.listen(port, function() {
+      console.log("Server is listening on port " + port);
+    });
+  })
+  .catch(err => {
+    console.error(err);
+  });
+
+function getTopPhones() {
+  // Redis Check
+  return getAsync('getTopPhones').then((reply) => {
+    if(reply === '{}' || reply === null) { //No Hits..
+      return buyit
+        .collection("phones_2")
+        .find()
+        .limit(10)
+        .toArray()
+    } else {
+      return {data: reply, fromRedis: true}; //Hit! Return from Redis.
+    }
+  });
+}
+
+app.get("/product/:id", function(request, response) {
+  buyit
+  .collection("phones_2")
+  .findOne({"title" : request.params.id}, (err, doc) => response.send(doc));
+});
+
+app.get("/topphones", function(request, response) {
+  getTopPhones()
+    .then(phones => {
+      response.send(phones);
+
+      if(!phones.fromRedis) // If not from Redis.. Insert Top Phones into Redis.
+        redisClient.set("getTopPhones", JSON.stringify(phones));
+    })
+    .catch(err => {
+      console.log(err);
+      response.status(500).send(err);
+    });
+});
+
+app.post('/realsearch', function (req, res){
+  let body = {
+    query: {
+      query_string : {
+          query : req.body["search_query"]
+      }
+    },
+    sort : [
+      // { "rating" : "desc" },
+      "_score"
+    ],
+    from: 0,
+    size: 10
+  }
+
+  elasticClient.search({index:'electronics',  body:body, type:'product'})
+  .then(results => {
+    res.send(results.hits.hits);
+  })
+  .catch(err=>{
+    console.log(err);
+    res.send({error: err});
+  });
+});
+
+app.post('/search', function (req, res){
+  var query = req.body["search_query"];
+  return getAsync(`search/${query.toLowerCase()}`).then((reply) => {
+    if(reply === '{}' || reply === null) {
+      let body = {
+        query: {
+          query_string : {
+              query : query
+          }
+        },
+        sort : [
+          { rating : "desc" },
+          "_score"
+        ],
+        from: 0,
+        size: 1000
+      }
+
+      elasticClient.search({index:'electronics',  body:body, type:'product'})
+      .then(results => {
+        console.log("No hits in Redis!");
+        res.send(results.hits.hits);
+        // redisClient.set(`search/${req.body["search_query"].toLowerCase()}`, JSON.stringify(results.hits.hits));
+        // console.log("Set in Redis!");
+      })
+      .catch(err=>{
+        console.log(err);
+        res.send({error: err});
+      });
+    } else {
+      console.log("Hit!");
+      res.send({data: reply, fromRedis: true});
+    }
+  });
+});
+
+
+
+

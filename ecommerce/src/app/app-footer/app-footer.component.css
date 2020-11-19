@@ -1,0 +1,11 @@
+.container-fluid {
+  background: var(--color-secondary);
+  padding: 1rem;
+}
+
+.container-fluid h1 {
+  font-family: var(--primary-font);
+  font-weight: bold;
+  letter-spacing: -2px;
+  color: white;
+}

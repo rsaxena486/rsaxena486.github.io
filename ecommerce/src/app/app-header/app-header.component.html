@@ -1,0 +1,33 @@
+<div class="container-fluid header p-5 d-flex">
+  <div class="logo d-flex align-items-center" style="
+  margin-right: 17.5%;">
+    <h1>BuyIt</h1>
+  </div>
+  <ul class="nav justify-content-center">
+    <li class="nav-item search">
+      <input type="text" (keyup)="realtimeSearch($event)" placeholder="Search Me.." #search_query id="search_query">
+      <div id="keyup-results" *ngIf="search_results">
+        <div class="result" *ngFor="let result of search_results">
+          <h5 style="cursor:pointer;" [routerLink]="['/product', result._source.title]">{{result._source.title}}</h5>
+          <h6 class="text-muted" style="margin-bottom: 0;">{{result._source.binding}}</h6>
+        </div>
+      </div>
+    </li>
+    <li class="nav-item">
+      <button class="btn btn-primary search_btn" [routerLink]="['/search', search_query.value]">
+          <svg viewBox="0 0 24 24" preserveAspectRatio="xMidYMid meet" focusable="false" style="pointer-events: none; display: block; width: 25px; fill: #fff;"><g><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"></path></g></svg>
+      </button>
+    </li>
+    <li class="nav-item">
+      <div ngbDropdown class="d-inline-block">
+        <button class="btn" id="dropdownCategories" ngbDropdownToggle>Categories</button>
+        <div ngbDropdownMenu aria-labelledby="dropdownCategories" id="dropdownCategoryList">
+          <button class="dropdown-item">Electronics</button>
+          <button class="dropdown-item">Home/Decor</button>
+          <button class="dropdown-item">Books</button>
+          <button class="dropdown-item">Movies/Music</button>
+        </div>
+      </div>
+    </li>
+  </ul>
+</div>

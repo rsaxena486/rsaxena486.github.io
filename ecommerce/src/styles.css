@@ -1,0 +1,111 @@
+@import url('https://fonts.googleapis.com/css?family=Playfair+Display:400,400i,700,700i');
+@import url('https://fonts.googleapis.com/css?family=Lato:400,700');
+:root {
+	--color-primary: #000;
+	--color-secondary: #EEE;
+	--color-tertiary: #FAFAFA;
+	--primary-font: 'Playfair Display', sans-serif;
+	--secondary-font: 'Lato', sans-serif;
+}
+
+html {
+	overflow-x: hidden !important;
+	font-size: 12px;
+	font-family: var(--secondary-font) !important;
+}
+
+.btn {
+  border-radius: 5px;
+  font-family: var(--primary-font);
+  font-size: 1.25rem !important;
+}
+
+.btn-primary {
+  background-color: var(--color-primary) !important;
+  border-color: var(--color-secondary) !important;
+  outline: none !important;
+  border-radius: 0 !important;
+}
+
+/* PRODUCT DIV STYLE */
+.prodDiv {
+  /* border: 1px solid var(--color-secondary); */
+  border-left: 1px solid var(--color-secondary) !important;
+  border-right: 1px solid var(--color-secondary)  !important;
+  border-top: 0 !important;
+  border-bottom: 0 !important;
+  margin-bottom: 1rem !important;
+  border-radius: 0 !important;
+  padding: 10px;
+}
+.prodDiv .card-body {
+  padding: 1.25rem 5px !important;
+}
+.prodDiv .card-image-top {
+  border-radius: 0;
+}
+.prodDiv .card-body .card-title {
+  font-family: var(--primary-font);
+  font-size: 1.5rem;
+  /* font-weight: bold; */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.prodDiv .card-body .card-subtitle {
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-weight: 700;
+}
+
+.buyBtn {
+  margin-top: 10px;
+  width: fit-content;
+  display: inline-flex !important;
+}
+
+/* styles for '...' */
+.block-with-text {
+  /* hide text if it more than N lines  */
+  overflow: hidden;
+  /* for set '...' in absolute position */
+  position: relative;
+  /* use this value to count block height */
+  line-height: 1.5em;
+  /* max-height = line-height (1.2) * lines max number (3) */
+  max-height: 7.5em;
+  /* fix problem when last visible word doesn't adjoin right side  */
+  text-align: justify;
+  /* place for '...' */
+  margin-right: -1em;
+  padding-right: 1em;
+}
+/* create the ... */
+.block-with-text:before {
+  /* points in the end */
+  content: '...';
+  /* absolute position */
+  position: absolute;
+  /* set position to right bottom corner of block */
+  right: 0;
+  bottom: 0;
+}
+/* hide ... if we have text, which is less than or equal to max lines */
+.block-with-text:after {
+  /* points in the end */
+  content: '';
+  /* absolute position */
+  position: absolute;
+  /* set position to right bottom corner of text */
+  right: 0;
+  /* set width and height */
+  width: 1em;
+  height: 1em;
+  margin-top: 0.2em;
+  /* bg color = bg color under block */
+  background: white;
+}
+
+
+
+

@@ -1,0 +1,24 @@
+<app-loader *ngIf="!dataLoaded"></app-loader>
+<div class="container">
+  <div class="row">
+    <div class="col-md-6 col-xs-12" style="border-right: 1px solid #ccc;">
+      <img class="img" [src]="product.imgURL"/>
+    </div>
+    <div class="col-md-6 col-xs-12 prod_content_div">
+      <h1>{{product.title}}</h1>
+      <h4>
+        <!-- {{product.binding}} |  -->
+        <span style="color: black; letter-spacing: 0px; text-transform: none; font-weight: normal">{{product.binding}} | {{product.brand}}</span>
+      </h4>
+      <div class="d-flex" style="height: 25px;">
+        <svg *ngFor="let i of counter(product.rating)" viewBox="0 0 24 24" preserveAspectRatio="xMidYMid meet" focusable="false" style="pointer-events: none; display: block; width: 25px;fill:goldenrod;"><g><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"></path></g></svg>
+        <svg *ngFor="let i of counter(5 - product.rating)" viewBox="0 0 24 24" preserveAspectRatio="xMidYMid meet" focusable="false" style="pointer-events: none; display: block; width: 25px;fill:#ccc;"><g><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"></path></g></svg>
+      </div>
+      <h1>
+        <span style="font-family: var(--secondary-font); font-size: 1.25rem;">$</span>
+        <span>{{product.price.split('$')[1]}}</span>
+      </h1>
+      <p>{{product.features.join('. ')}}</p>
+    </div>
+  </div>
+</div>
