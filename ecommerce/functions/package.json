@@ -15,7 +15,7 @@
     "fecha": "^2.3.2",
     "mongo-elasticsearch": "^1.0.0",
     "mongodb": "^3.1.9",
-    "redis": "^2.8.0"
+    "redis": "^3.1.1"
   },
   "devDependencies": {
     "nodemon": "^1.18.6"
